@@ -67,7 +67,7 @@ public class EasyExcelUtil {
     }
 
     /**
-     * 导出excel表格;只导出模板
+     * 导出excel表格-列不确定情况;只导出模板【一个处理器】
      *
      * @param response
      * @param headList     表头列表
@@ -94,7 +94,7 @@ public class EasyExcelUtil {
     }
 
     /**
-     * 导出excel表格-列不确定情况;只导出模板
+     * 导出excel表格-列不确定情况;只导出模板【多个处理器】
      *
      * @param response
      * @param headList      表头列表
@@ -123,7 +123,7 @@ public class EasyExcelUtil {
     }
 
     /**
-     * 导出excel表格
+     * 导出excel表格-不支持设置样式
      *
      * @param response
      * @param dataList  数据列表
@@ -141,7 +141,7 @@ public class EasyExcelUtil {
     }
 
     /**
-     * 导出excel表格-支持行单元格合并
+     * 导出excel表格-支设置单元格样式
      *
      * @param response
      * @param dataList     数据列表
