@@ -2,7 +2,6 @@ package com.wm.easyexcel.controller;
 
 import cn.hutool.core.collection.CollUtil;
 import com.wm.easyexcel.entity.Student;
-import com.wm.easyexcel.entity.Teacher;
 import com.wm.easyexcel.handler.UserExcelHeadHandler;
 import com.wm.easyexcel.service.IStudentService;
 import com.wm.easyexcel.service.ITeacherService;
@@ -20,6 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -147,6 +149,26 @@ public class ExportController {
     }
 
 
+    /**************以下填充模板数据的接口测试说明：可改为get请求，InputStream可使用本地文件输入流，然后变可通过浏览器下载。******************************/
+    /**
+     * 根据模板将集合对象填充表格-list
+     *
+     * @param template
+     * @param response
+     */
+    @PostMapping("/student/template/fill-list")
+    public void exportFillTemplateList(@RequestParam("template") MultipartFile template, HttpServletResponse response) {
+        log.info("根据模板填充学生数据，list，文件开始下载...");
+        long startTimeL = System.currentTimeMillis();
+        try {
+            List students = studentService.listStudent(10L);
+            EasyExcelUtil.exportTemplateExcelList(template.getInputStream(), response, students, "填充学生模板数据-list", "students");
+        } catch (Exception e) {
+            log.error("根据模板填充学生数据，list，文件下载失败！", e);
+        }
+        log.info("根据模板填充学生数据，list，文件下载完成：{}秒", (System.currentTimeMillis() - startTimeL) / 1000);
+    }
+
     /**
      * 根据模板将集合对象填充表格-单个sheet
      *
@@ -159,7 +181,10 @@ public class ExportController {
         long startTimeL = System.currentTimeMillis();
         try {
             List<Student> students = studentService.listStudent(10L);
-            EasyExcelUtil.exportSheetTemplateExcel(template.getInputStream(), response, students, Student.class, "填充学生模板数据-sheet");
+            Map<String, Object> map = new HashMap<>(3);
+            map.put("startMonth", "2022-8-10");
+            map.put("endMonth", "2022-8-12");
+            EasyExcelUtil.exportTemplateSheet(template.getInputStream(), response, students, map, "填充学生模板数据-sheet");
         } catch (Exception e) {
             log.error("根据模板填充学生数据，单个sheet，文件下载失败！", e);
         }
@@ -178,48 +203,40 @@ public class ExportController {
         long startTimeL = System.currentTimeMillis();
         try {
             List students = studentService.listStudent(10L);
+            Map<String, Object> map = new HashMap<>(2);
+            map.put("startMonth", "2022-8-10");
+            map.put("endMonth", "2022-8-12");
             List teachers = teacherService.listTeacher(10L);
-            EasyExcelUtil.exportSheetsTemplateExcel(template.getInputStream(), response, students, teachers, Student.class, Teacher.class, "填充学生模板数据-sheets");
+            Map<String, Object> map2 = new HashMap<>(1);
+            map2.put("illustrate", "老师人员列表");
+            EasyExcelUtil.exportTemplateSheets(template.getInputStream(), response, students, teachers, map, map2, "填充学生模板数据-sheets");
         } catch (Exception e) {
             log.error("根据模板填充数据，多个sheet，文件下载失败！", e);
         }
         log.info("根据模板填充数据，多个sheet，文件下载完成：{}秒", (System.currentTimeMillis() - startTimeL) / 1000);
     }
 
+    /********转为get请求测试示例********/
     /**
-     * 根据模板将集合对象填充表格-单个object
+     * get请求测试
      *
-     * @param template
      * @param response
      */
-    @PostMapping("/student/template/fill-object")
-    public void exportFillTemplateObject(@RequestParam("template") MultipartFile template, HttpServletResponse response) {
-        log.info("根据模板填充学生数据，object，文件开始下载...");
+    @GetMapping("/student/template/test")
+    public void test(HttpServletResponse response) throws FileNotFoundException {
+        File file = new File("C:\\Users\\Administrator\\Desktop\\test.xlsx");
+        FileInputStream inputStream = new FileInputStream(file);
+        log.info("根据模板填充学生数据，单个sheet，文件开始下载...");
         long startTimeL = System.currentTimeMillis();
         try {
-            EasyExcelUtil.exportTemplateExcel(template.getInputStream(), response, Student.class, "填充学生模板数据-object", "student");
+            List<Student> students = studentService.listStudent(10L);
+            Map<String, Object> map = new HashMap<>(3);
+            map.put("startMonth", "2022-8-10");
+            map.put("endMonth", "2022-8-12");
+            EasyExcelUtil.exportTemplateSheet(inputStream, response, students, map, "填充学生模板数据-sheet");
         } catch (Exception e) {
-            log.error("根据模板填充学生数据，object，文件下载失败！", e);
+            log.error("根据模板填充学生数据，单个sheet，文件下载失败！", e);
         }
-        log.info("根据模板填充学生数据，object，文件下载完成：{}秒", (System.currentTimeMillis() - startTimeL) / 1000);
-    }
-
-    /**
-     * 根据模板将集合对象填充表格-list
-     *
-     * @param template
-     * @param response
-     */
-    @PostMapping("/student/template/fill-list")
-    public void exportFillTemplateList(@RequestParam("template") MultipartFile template, HttpServletResponse response) {
-        log.info("根据模板填充学生数据，list，文件开始下载...");
-        long startTimeL = System.currentTimeMillis();
-        try {
-            List students = studentService.listStudent(10L);
-            EasyExcelUtil.exportTemplateExcelList(template.getInputStream(), response, students, "填充学生模板数据-list", "students");
-        } catch (Exception e) {
-            log.error("根据模板填充学生数据，list，文件下载失败！", e);
-        }
-        log.info("根据模板填充学生数据，list，文件下载完成：{}秒", (System.currentTimeMillis() - startTimeL) / 1000);
+        log.info("根据模板填充学生数据，单个sheet，文件下载完成：{}秒", (System.currentTimeMillis() - startTimeL) / 1000);
     }
 }

@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 public class Teacher {
     @ExcelProperty("编号")
-    private String sNo;
+    private String sno;
     @ExcelProperty("老师名字")
     private String name;
     @ExcelProperty("性别")

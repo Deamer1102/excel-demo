@@ -26,7 +26,7 @@ public class TeacherServiceImpl implements ITeacherService {
             Teacher teacher = new Teacher();
             teacher.setSex("女");
             teacher.setName("老师A" + i);
-            teacher.setSNo(UUID.fastUUID().toString());
+            teacher.setSno(UUID.fastUUID().toString());
             teachers.add(teacher);
         }
         return teachers;

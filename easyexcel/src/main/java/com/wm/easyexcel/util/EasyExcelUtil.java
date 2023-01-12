@@ -192,66 +192,6 @@ public class EasyExcelUtil {
     }
 
     /**
-     * 根据模板将集合对象填充表格-单个sheet
-     *
-     * @param inputStream 模板文件输入流
-     * @param list        填充对象集合
-     * @param object      填充对象
-     * @param fileName    文件名称
-     * @throws Exception
-     */
-    public static <T> void exportSheetTemplateExcel(InputStream inputStream, HttpServletResponse response, List<T> list, Object object, String fileName) throws Exception {
-        FillConfig fillConfig = FillConfig.builder().forceNewRow(Boolean.TRUE).build();
-        ExcelWriter excelWriter = EasyExcelFactory.write(getOutputStream(fileName, response)).withTemplate(inputStream).build();
-        WriteSheet writeSheet0 = EasyExcelFactory.writerSheet(0).build();
-        excelWriter.fill(object, fillConfig, writeSheet0);
-        excelWriter.fill(list, fillConfig, writeSheet0);
-        excelWriter.finish();
-    }
-
-    /**
-     * 根据模板将集合对象填充表格-多个sheet
-     *
-     * @param inputStream 模板文件输入
-     * @param response    模板文件输出流
-     * @param list1       填充对象集合
-     * @param list2       填充对象集合
-     * @param object1     填充对象
-     * @param object2     填充对象
-     * @param fileName    文件名称
-     * @throws Exception
-     */
-    public static <T> void exportSheetsTemplateExcel(InputStream inputStream, HttpServletResponse response, List<T> list1, List<T> list2, Object object1, Object object2, String fileName) throws Exception {
-        FillConfig fillConfig = FillConfig.builder().forceNewRow(Boolean.TRUE).build();
-        ExcelWriter excelWriter = EasyExcelFactory.write(getOutputStream(fileName, response)).withTemplate(inputStream).build();
-        WriteSheet writeSheet0 = EasyExcelFactory.writerSheet(0).build();
-        WriteSheet writeSheet1 = EasyExcelFactory.writerSheet(1).build();
-        excelWriter.fill(object1, fillConfig, writeSheet0);
-        excelWriter.fill(list1, fillConfig, writeSheet0);
-        excelWriter.fill(object2, fillConfig, writeSheet1);
-        excelWriter.fill(list2, fillConfig, writeSheet1);
-        excelWriter.finish();
-    }
-
-    /**
-     * 根据模板将单个对象填充表格
-     *
-     * @param inputStream 模板文件输入流
-     * @param response    模板文件输出流
-     * @param object      填充对象
-     * @param fileName    文件名称
-     * @param sheetName   需要写入的sheet名称(不传：填充到第一个sheet)
-     * @throws Exception
-     */
-    public static void exportTemplateExcel(InputStream inputStream, HttpServletResponse response, Object object, String fileName, String sheetName) throws Exception {
-        if (StringUtils.isBlank(sheetName)) {
-            EasyExcelFactory.write(getOutputStream(fileName, response)).withTemplate(inputStream).sheet().doFill(object);
-        } else {
-            EasyExcelFactory.write(getOutputStream(fileName, response)).withTemplate(inputStream).sheet(sheetName).doFill(object);
-        }
-    }
-
-    /**
      * 根据模板将集合对象填充表格
      *
      * @param inputStream 模板文件输入流
@@ -268,6 +208,54 @@ public class EasyExcelUtil {
         } else {
             EasyExcelFactory.write(getOutputStream(fileName, response)).withTemplate(inputStream).sheet(sheetName).doFill(list);
         }
+    }
+
+
+    /**
+     * 根据模板将集合对象填充表格-单个sheet
+     *
+     * @param inputStream 模板文件输入流
+     * @param list        填充对象集合-元素对应模板中的.{}
+     * @param object      填充对象-元素对应模板中的{}
+     * @param fileName    文件名称
+     * @throws Exception
+     */
+    public static <T> void exportTemplateSheet(InputStream inputStream, HttpServletResponse response, List<T> list, Object object, String fileName) throws Exception {
+        FillConfig fillConfig = FillConfig.builder().forceNewRow(Boolean.TRUE).build();
+        ExcelWriter excelWriter = EasyExcelFactory.write(getOutputStream(fileName, response)).withTemplate(inputStream).build();
+        WriteSheet writeSheet0 = EasyExcelFactory.writerSheet(0).build();
+        // 全部填充：全部加载到内存中一次填充
+        excelWriter.fill(object, fillConfig, writeSheet0);
+        excelWriter.fill(list, fillConfig, writeSheet0);
+        // 可分多次填充，使用文件缓存（省内存）
+        // excelWriter.fill(list1, writeSheet);
+        // excelWriter.fill(list2, writeSheet);
+        excelWriter.finish();
+    }
+
+    /**
+     * 根据模板将集合对象填充表格-多个sheet
+     *
+     * @param inputStream 模板文件输入
+     * @param response    模板文件输出流
+     * @param list1       填充对象集合-元素对应模板中的.{}
+     * @param list2
+     * @param object1     填充对象-元素对应模板中的{}
+     * @param object2
+     * @param fileName    文件名称
+     * @throws Exception
+     */
+    public static <T> void exportTemplateSheets(InputStream inputStream, HttpServletResponse response, List<T> list1, List<T> list2,
+                                                Object object1, Object object2, String fileName) throws Exception {
+        FillConfig fillConfig = FillConfig.builder().forceNewRow(Boolean.TRUE).build();
+        ExcelWriter excelWriter = EasyExcelFactory.write(getOutputStream(fileName, response)).withTemplate(inputStream).build();
+        WriteSheet writeSheet0 = EasyExcelFactory.writerSheet(0).build();
+        WriteSheet writeSheet1 = EasyExcelFactory.writerSheet(1).build();
+        excelWriter.fill(object1, fillConfig, writeSheet0);
+        excelWriter.fill(list1, fillConfig, writeSheet0);
+        excelWriter.fill(object2, fillConfig, writeSheet1);
+        excelWriter.fill(list2, fillConfig, writeSheet1);
+        excelWriter.finish();
     }
 
     /**

@@ -28,7 +28,7 @@ public class StudentServiceImpl implements IStudentService {
             student.setSex("男");
             student.setNum(i);
             student.setName("小A" + i);
-            student.setSNo(UUID.fastUUID().toString());
+            student.setSno(UUID.fastUUID().toString());
             students.add(student);
         }
         return students;
