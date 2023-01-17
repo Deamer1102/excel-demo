@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @ClassName: StudentServiceImpl
+ * @ClassName: TeacherServiceImpl
  * @Description: 老师相关接口实现
  * @Author: WM
  * @Date: 2023/1/9 16:53
