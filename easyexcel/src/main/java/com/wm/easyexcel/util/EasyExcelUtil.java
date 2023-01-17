@@ -59,7 +59,8 @@ public class EasyExcelUtil {
     public static <T> List<List<T>> importExcels(InputStream inputStream, int sheetNum, List<T> sheetObjList, ReadExcelListener<T> readExcelListener) throws Exception {
         List<List<T>> resultList = new LinkedList<>();
         for (int index = 0; index < sheetNum; index++) {
-            EasyExcelFactory.read(inputStream, sheetObjList.get(index).getClass(), readExcelListener).sheet(index).doRead();
+            Class<T> tClass = (Class<T>) sheetObjList.get(index).getClass();
+            EasyExcelFactory.read(inputStream, tClass, readExcelListener).sheet(index).doRead();
             List<T> list = readExcelListener.getList();
             resultList.add(list);
         }
