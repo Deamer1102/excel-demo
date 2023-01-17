@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Assert;
 import com.wm.easyexcel.entity.Student;
 import com.wm.easyexcel.entity.Teacher;
-import com.wm.easyexcel.listern.ImportStudentListener;
+import com.wm.easyexcel.listern.ImportUserListener;
 import com.wm.easyexcel.util.EasyExcelUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +27,7 @@ import java.util.List;
 public class ImportController {
 
     @Resource
-    private ImportStudentListener importStudentListener;
+    private ImportUserListener importUserListener;
 
     /**
      * 导入一个sheet学生数据
@@ -41,7 +41,7 @@ public class ImportController {
         long startTime = System.currentTimeMillis();
         List<Student> dataList = null;
         try {
-            dataList = EasyExcelUtil.importExcel(file.getInputStream(), null, null, importStudentListener);
+            dataList = EasyExcelUtil.importExcel(file.getInputStream(), null, null, importUserListener);
             // 数据录入
             Assert.isFalse(CollUtil.isEmpty(dataList), "未解析到导入的数据！");
         } catch (Exception e) {
@@ -66,7 +66,7 @@ public class ImportController {
             List sheetObjList = new ArrayList(2);
             sheetObjList.add(Student.class);
             sheetObjList.add(Teacher.class);
-            dataList = EasyExcelUtil.importExcels(file.getInputStream(), 2, sheetObjList, importStudentListener);
+            dataList = EasyExcelUtil.importExcels(file.getInputStream(), 2, sheetObjList, importUserListener);
             // 数据录入
             Assert.isFalse(CollUtil.isEmpty(dataList), "未解析到导入的数据！");
         } catch (Exception e) {

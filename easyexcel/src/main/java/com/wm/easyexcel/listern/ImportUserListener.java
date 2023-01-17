@@ -18,7 +18,7 @@ import java.util.List;
  * @Date: 2022/12/22 10:44
  */
 @Component
-public class ImportStudentListener extends ReadExcelListener {
+public class ImportUserListener extends ReadExcelListener {
 
     @Resource
     private IStudentService studentService;
